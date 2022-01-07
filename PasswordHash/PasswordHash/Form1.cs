@@ -20,14 +20,13 @@ namespace PasswordHash
         public Form1()
         {
             this.FormClosing += Form1_FormClosing;
-         
-            passFile = new StreamWriter("HashLozinke.txt");
+            
             InitializeComponent();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            passFile.Close();
+            //passFile.Close();
             Application.Exit();
         }
 
@@ -43,13 +42,61 @@ namespace PasswordHash
         private void SavePass()
         {
             passFile.WriteLine(Encrypt(textBox1.Text));
+            passFile.Close();
             
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            SavePass();
-            textBox1.Clear();
+            try {
+                if (!File.Exists("HashLozinke.txt"))
+                {
+                    passFile = new StreamWriter("HashLozinke.txt");
+                }
+                else
+                {
+                    passFile = new("HashLozinke.txt", append: true);
+
+                }
+                SavePass();
+                textBox1.Clear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+
         }
-        
+            
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!File.Exists("HashLozinke.txt"))
+                {
+                    MessageBox.Show("Nepostoji nijedna lozinka");
+                }
+                   bool flag = false;
+                StreamReader sr = new StreamReader("HashLozinke.txt");
+                string line = sr.ReadLine();
+                while (line != null)
+                {
+                    if (line.Equals(Encrypt(textBox1.Text)))
+                    {
+                        MessageBox.Show("Lozinka je ispravna");
+                        flag = true;
+                    }
+                    line = sr.ReadLine();
+                }
+                if(!flag)
+                    MessageBox.Show("Lozinka ne postoji");
+                sr.Close();
+                textBox1.Clear();
+            }
+           catch(Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
     }
 }
