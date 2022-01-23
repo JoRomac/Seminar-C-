@@ -15,7 +15,7 @@ namespace PasswordHash
 {
     public partial class Form1 : Form
     {
-        private StreamWriter passFile;
+        private StreamWriter myFile;
 
         public Form1()
         {
@@ -26,7 +26,6 @@ namespace PasswordHash
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //passFile.Close();
             Application.Exit();
         }
 
@@ -41,42 +40,30 @@ namespace PasswordHash
         }
         private void SavePass()
         {
-            passFile.WriteLine(Encrypt(textBox1.Text));
-            passFile.Close();
+            myFile.WriteLine(Encrypt(textBox1.Text));
+            myFile.Close();
             
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            try {
-                if (!File.Exists("HashLozinke.txt"))
-                {
-                    passFile = new StreamWriter("HashLozinke.txt");
-                }
-                else
-                {
-                    passFile = new("HashLozinke.txt", append: true);
-
-                }
-                SavePass();
-                textBox1.Clear();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-
+            //if (!File.Exists("HashLozinke.txt"))
+               // passFile = new StreamWriter("HashLozinke.txt");
+           // else
+            myFile = new("HashLozinke.txt", append:true);
+            SavePass();
+            textBox1.Clear();
         }
             
 
         private void button2_Click(object sender, EventArgs e)
         {
-            try
+  
+            if (!File.Exists("HashLozinke.txt"))
             {
-                if (!File.Exists("HashLozinke.txt"))
-                {
-                    MessageBox.Show("Nepostoji nijedna lozinka");
-                }
-                   bool flag = false;
+                MessageBox.Show("Nepostoji datoteka lozinki");
+            }
+            else {
+                bool flag = false;
                 StreamReader sr = new StreamReader("HashLozinke.txt");
                 string line = sr.ReadLine();
                 while (line != null)
@@ -88,15 +75,12 @@ namespace PasswordHash
                     }
                     line = sr.ReadLine();
                 }
-                if(!flag)
+                if (!flag)
                     MessageBox.Show("Lozinka ne postoji");
                 sr.Close();
-                textBox1.Clear();
-            }
-           catch(Exception ex)
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-            }
+            }    
+            textBox1.Clear();
+
         }
     }
 }
